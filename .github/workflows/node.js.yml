@@ -1,0 +1,31 @@
+name: Run Panel With Cloudflare Tunnel
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  panel:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: 📦 Install Dependencies
+        run: npm install
+      
+      - name: ☁ Download Cloudflared (Direct URL)
+        run: |
+          curl -L https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64 -o cloudflared
+          chmod +x cloudflared
+          sudo mv cloudflared /usr/bin/cloudflared
+
+      - name: 🌐 Start Cloudflare Tunnel
+        run: |
+          sudo cloudflared service install eyJhIjoiMmU2YmYyYWI1MTVmMTRiZTZhYzQxZDYzOGJkMDBkYjkiLCJ0IjoiYWYwNDUzNDgtOGYzMy00ZDQyLWFjY2YtNGZmMmYxOTQ0MDhjIiwicyI6Ik1EQTFaV0V5TWpRdFlXSXlOaTAwWXpkbUxXSmtObVV0T1dVNU5UTmpOakprTVRnMSJ9
+
+      - name: 🚀 Start Panel
+        run: |
+          node index.js
